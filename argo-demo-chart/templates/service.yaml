@@ -1,15 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "argo-demo.fullname" . }}
+  name: sample-webserver
   labels:
-    {{- include "argo-demo.labels" . | nindent 4 }}
+    app: sample-webserver
 spec:
-  type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
+    - port: 80
+      targetPort: 8080
       protocol: TCP
       name: http
   selector:
-    {{- include "argo-demo.selectorLabels" . | nindent 4 }}
+    app: sample-webserver
