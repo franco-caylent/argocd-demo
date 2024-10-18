@@ -1,16 +1,26 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: sealed-secrets
-  namespace: argo-demo
+  name: argo-demo
+  namespace: argocd
 spec:
-  project: default
-  source:
-    chart: sealed-secrets
-    repoURL: https://bitnami-labs.github.io/sealed-secrets
-    targetRevision: 1.16.1
-    helm:
-      releaseName: sealed-secrets
+  project: argo-demo
+  syncPolicy:
+    automated:
+      selfHeal: true
   destination:
-    server: "https://kubernetes.default.svc"
-    namespace: kubeseal
+    name: "maryland-sandbox"
+    namespace: argo-demo
+  sources:
+    - chart: argo-demo
+      #repoURL: https://franco-test-tyler.s3.amazonaws.com
+      repoURL: s3://franco-test-tyler
+      #repoURL: http://franco-test-tyler.s3-website-us-east-1.amazonaws.com
+      targetRevision: 0.1.0
+      helm:
+        releaseName: argo-demo
+        valueFiles: 
+          - "$values/states/maryland/sandbox/argo-demo-values.yml"
+    - repoURL: https://github.com/franco-caylent/migration-environments
+      targetRevision: main
+      ref: values
